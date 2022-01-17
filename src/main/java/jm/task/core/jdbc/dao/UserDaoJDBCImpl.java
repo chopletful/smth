@@ -15,10 +15,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String sqlCommand = "CREATE TABLE users (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(45), lastName VARCHAR(45), age SMALLINT NOT NULL, PRIMARY KEY (id))";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) { // создание объекта prepareStatement
-            preparedStatement.executeUpdate(sqlCommand);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE users (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(45)," +
+                    " lastName VARCHAR(45), age SMALLINT NOT NULL, PRIMARY KEY (id))");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,8 +46,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("DELETE FROM users WHERE id");
+        try (PreparedStatement prepareStatement = connection.prepareStatement("DELETE FROM users WHERE id")) {
+            prepareStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,8 +76,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("DELETE FROM users");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users")) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
